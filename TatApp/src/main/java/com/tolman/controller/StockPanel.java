@@ -1,8 +1,11 @@
 package com.tolman.controller;
 
 import com.tolman.model.Stock;
+import com.tolman.model.StockService;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,7 +23,10 @@ public class StockPanel extends JPanel {
     private JList<Stock> lstStock;
 
     private DefaultListModel<Stock> stockListModel = new DefaultListModel<>();
-    private static final Dimension List_DIMENSION = new Dimension(300, 400);
+    private static final Dimension List_DIMENSION = new Dimension(300, 100);
+
+    private Stock currentlyEditing;
+    private JTextField txtStockName;
 
     private StockPanel() {
         mylayout = new GridBagLayout();
@@ -28,7 +34,27 @@ public class StockPanel extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
 
         lstStock = new JList<>(stockListModel);
-        lstStock.setMinimumSize(List_DIMENSION);
+        lstStock.setPreferredSize(List_DIMENSION);
+
+        //TODO Load from DB
+        stockListModel.addAll(StockService.getInstance().getAllStock(stockListModel));
+        this.add(lstStock);
+        lstStock.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (lstStock.getSelectedIndex() != -1){
+                    currentlyEditing = stockListModel.get(lstStock.getSelectedIndex());
+                    if(currentlyEditing.getName() == null){
+                        txtStockName.setText("");
+                        return;
+                    }
+                     txtStockName.setText(currentlyEditing.getName());
+                }
+            }
+        });
+
+
+
 
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
@@ -115,9 +141,9 @@ public class StockPanel extends JPanel {
             }
         });
 
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        this.add(lstStock, gbc);
+       // gbc.gridx = 1;
+       // gbc.gridy = 2;
+       // this.add(lstStock, gbc);
     }
 
     public static StockPanel getInstance() {

@@ -1,7 +1,10 @@
 package com.tolman.model;
 
+import java.sql.Date;
+
 public class Booking {
     private long id;
+    private Date bookingDate;
     private String name;
     private int age;
     private String email;
@@ -14,6 +17,38 @@ public class Booking {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public Date getBookingDate() {
+        return bookingDate;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public long getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(long phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getDesignBrief() {
+        return designBrief;
+    }
+
+    public void setDesignBrief(String designBrief) {
+        this.designBrief = designBrief;
+    }
+
+    public void setBookingDate(Date bookingDate) {
+        this.bookingDate = bookingDate;
     }
 
     public String getName() {
@@ -54,6 +89,14 @@ public class Booking {
 
     public void getDesignBrief(String designBrief) {
         this.designBrief = designBrief;
+    }
+
+    @Override
+    public String toString() {
+        if(name == null){
+            return "Empty Booking";
+        }
+        return "Booking:" + name;
     }
 }
 

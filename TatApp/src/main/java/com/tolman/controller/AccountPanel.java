@@ -86,7 +86,7 @@ public class AccountPanel extends JPanel {
         btnRemoveAccount.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String removeAccount = JOptionPane.showInputDialog("Are you sure you want to delete this?");
+                String removeAccount = JOptionPane.showInputDialog("Are you sure you want to delete this account?");
             }
         });
 
