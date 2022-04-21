@@ -23,9 +23,7 @@ public class Booking {
         return bookingDate;
     }
 
-    public String getEmail() {
-        return email;
-    }
+    public String getEmail() { return email; }
 
     public void setEmail(String email) {
         this.email = email;

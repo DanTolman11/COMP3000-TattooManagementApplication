@@ -2,6 +2,7 @@ package com.tolman.controller;
 
 import com.tolman.model.Booking;
 import com.tolman.model.BookingService;
+import org.sqlite.date.DateParser;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -9,6 +10,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Date;
 
 /*
 * Steps:
@@ -34,9 +36,19 @@ public class BookingPanel extends JPanel {
     private static final Dimension List_DIMENSION = new Dimension(300,400);
 
     private Booking currentlyEditing;
+    private JTextField txtBookingId;
+    private JTextField txtBookingDate;
     private JTextField txtBookingName;
+    private JTextField txtBookingAge;
+    private JTextField txtBookingEmail;
+    private JTextField txtBookingPhoneNumber;
+    private JTextField txtBookingDesign;
 
     private BookingPanel() {
+        mylayout = new GridBagLayout();
+        this.setLayout(mylayout);
+        GridBagConstraints gbc = new GridBagConstraints();
+
         lstBookings = new JList<>(bookingListModel);
         lstBookings.setPreferredSize(new Dimension(500,100));
 
@@ -49,10 +61,23 @@ public class BookingPanel extends JPanel {
                 if (lstBookings.getSelectedIndex() != -1){
                     currentlyEditing = bookingListModel.get(lstBookings.getSelectedIndex());
                     if(currentlyEditing.getName() == null){
+                        txtBookingId.setText("");
+                        txtBookingDate.setText("");
                         txtBookingName.setText("");
+                        txtBookingAge.setText("");
+                        txtBookingEmail.setText("");
+                        txtBookingPhoneNumber.setText("");
+                        txtBookingDesign.setText("");
                         return;
                     }
+                    txtBookingId.setText(String.valueOf(currentlyEditing.getId()));
+                    txtBookingDate.setText(String.valueOf(currentlyEditing.getBookingDate()));
                     txtBookingName.setText(currentlyEditing.getName());
+                    txtBookingAge.setText(String.valueOf(currentlyEditing.getBookingDate()));
+                    txtBookingEmail.setText(currentlyEditing.getEmail());
+                    txtBookingPhoneNumber.setText(String.valueOf(currentlyEditing.getPhoneNumber()));
+                    txtBookingDesign.setText(currentlyEditing.getDesignBrief());
+
                 }
             }
         });
@@ -62,14 +87,26 @@ public class BookingPanel extends JPanel {
 
     private JPanel createBookingDetailsPanel() {
         JPanel bookingDetailsPanel = new JPanel();
+        txtBookingId = new JTextField(20);
+        txtBookingDate = new JTextField(20);
         txtBookingName = new JTextField(20);
+        txtBookingAge = new JTextField(20);
+        txtBookingEmail = new JTextField(20);
+        txtBookingPhoneNumber = new JTextField(20);
+        txtBookingDesign = new JTextField(20);
         bookingDetailsPanel.add(txtBookingName);
         JButton btnSave = new JButton("Save");
         btnSave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //TODO Validation before save... this should bve part of the BookingService
+                currentlyEditing.setId(Integer.parseInt(txtBookingId.getText()));
+                currentlyEditing.setBookingDate(Date.valueOf(txtBookingDate.getText()));
                 currentlyEditing.setName(txtBookingName.getText());
+                currentlyEditing.setAge(Integer.parseInt(txtBookingAge.getText()));
+                currentlyEditing.setEmail(txtBookingEmail.getText());
+                currentlyEditing.setPhoneNumber(Long.parseLong(txtBookingPhoneNumber.getText()));
+                currentlyEditing.setDesignBrief(txtBookingDesign.getText());
                 boolean valid = BookingService.getInstance().validateBooking(currentlyEditing);
                 if(!valid){
                     //TODO handle invalid change probably reset entity?
@@ -81,10 +118,11 @@ public class BookingPanel extends JPanel {
                 lstBookings.repaint();
             }
         });
+
         bookingDetailsPanel.add(btnSave);
         return bookingDetailsPanel;
     }
-
+    //Functionality for booking buttons
     private JPanel createBookingControlsPanel() {
         JPanel bookingControls = new JPanel();
         btnAdd = new JButton("Add");
@@ -100,7 +138,27 @@ public class BookingPanel extends JPanel {
         bookingControls.add(btnAdd);
         bookingControls.add(btnRemove);
         return bookingControls;
+
+
     }
+    //functionality for back button
+    private JPanel goBackPanel() {
+        JPanel goBack = new JPanel();
+        btnBack = new JButton("Back");
+        btnBack.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Application.getInstance().setWindow(ApplicationPanel.getInstance());
+            }
+        });
+        return goBack;
+    }
+
+
+
+
+
+
 //        lstBooking = new JList<>(bookingListModel);
 //        lstBooking.setMinimumSize(List_DIMENSION);
 //
