@@ -31,7 +31,14 @@ public class BookingDAO {
         while (rs.next()){
             Booking booking = new Booking();
             booking.setId(rs.getLong("id"));
+            booking.setBookingDate(rs.getDate("date"));
+            booking.setName(rs.getString("name"));
+            booking.setAge(rs.getInt("age"));
+            booking.setEmail(rs.getString("email"));
+            booking.setPhoneNumber(rs.getLong("phone number"));
+            booking.setDesignBrief(rs.getString("design brief"));
             results.add(booking);
+
         }
         return results;
 
