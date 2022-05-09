@@ -1,13 +1,10 @@
 package com.tolman.model;
 
 import com.tolman.model.database.BookingDAO;
-import com.tolman.model.database.UserDAO;
 
-import javax.naming.OperationNotSupportedException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class BookingService {
 
@@ -21,7 +18,7 @@ public class BookingService {
 
     public boolean validateBooking(Booking booking){
         List<Booking> foundConflicts = bookingDAO.getBookingsWithinRange(booking.getBookingDate(), booking.getBookingDate());
-        return !foundConflicts.isEmpty();
+        return foundConflicts.isEmpty();
     }
 
     public static BookingService getInstance(){
@@ -31,8 +28,34 @@ public class BookingService {
         return INSTANCE;
     }
 
-    public void saveBooking() {
-        throw new RuntimeException("Implement me...");
+    public boolean createBooking(Booking booking) {
+        if(!validateBooking(booking)){
+            return false;
+        }
+        if(booking.getId() != 0){
+            return false;
+        }
+        try {
+            return bookingDAO.createBooking(booking);
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean updateBooking(Booking booking) {
+        if(!validateBooking(booking)){
+            return false;
+        }
+        if(booking.getId() == 0){
+            return false;
+        }
+        try {
+            return bookingDAO.updateBooking(booking);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
     }
 
     public List<Booking> getAllBookings() {
@@ -42,5 +65,15 @@ public class BookingService {
             throwables.printStackTrace();
         }
         return new ArrayList<>();
+    }
+
+    public boolean deleteBooking(Booking booking) {
+        try {
+            bookingDAO.deleteBooking(booking);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }

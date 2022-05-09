@@ -1,9 +1,7 @@
 package com.tolman.model.database;
 
 import com.tolman.model.User;
-import com.tolman.utills.ConfigurationManager;
 
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -17,6 +15,31 @@ public class UserDAO {
     private UserDAO(){
 
     }
+
+    public List<User> getAllUsers() throws SQLException {
+        List<User> results = new ArrayList<>();
+        String sql = String.format("select * from user");
+        Statement statement = connection.getConnection().createStatement();
+        ResultSet rs = statement.executeQuery(sql);
+        while (rs.next()){
+            User user = new User();
+            user.setId(rs.getInt("id"));
+            user.setUsername(rs.getString("username"));
+            user.setPassword(rs.getString("password"));
+            results.add(user);
+        }
+        return results;
+
+    }
+
+    public static UserDAO getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new UserDAO();
+        }
+
+        return INSTANCE;
+    }
+
     public Optional<User> getUserByUsername(String username) {
         try {
             String sql = String.format("select * from user where username='%s'", username);
@@ -24,7 +47,7 @@ public class UserDAO {
             ResultSet rs = statement.executeQuery(sql);
             if(rs.next()){
                 User user = new User();
-                user.setId(rs.getLong("id"));
+                user.setId(rs.getInt("id"));
                 user.setUsername(rs.getString("username"));
                 user.setPassword(rs.getString("password"));
                 return Optional.of(user);
@@ -37,26 +60,28 @@ public class UserDAO {
 
 
     }
-    public List<User> getAllUsers() throws SQLException {
-        List<User> results = new ArrayList<>();
-        String sql = String.format("select * from user");
+
+    public boolean createUser(User user) throws SQLException {
+        String sql = String.format("INSERT INTO user(username, password) values('%s','%s')", user.getUsername(), user.getPassword());
         Statement statement = connection.getConnection().createStatement();
-        ResultSet rs = statement.executeQuery(sql);
-        while (rs.next()){
-            User user = new User();
-            user.setId(rs.getLong("id"));
-            user.setUsername(rs.getString("username"));
-            user.setPassword(rs.getString("password"));
-            results.add(user);
+        statement.execute(sql);
+        ResultSet rs = statement.getGeneratedKeys();
+        if (rs.next()){
+            user.setId(rs.getInt(1));
         }
-        return results;
-
+        return true;
     }
-    public static UserDAO getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new UserDAO();
-        }
 
-        return INSTANCE;
+    public boolean updateUser(User user) throws SQLException {
+        String sql = String.format("UPDATE user set username='%s', password='%s' WHERE id='%d'", user.getUsername(), user.getPassword(), user.getId());
+        Statement statement = connection.getConnection().createStatement();
+        statement.executeUpdate(sql);
+        return true;
+    }
+
+    public void deleteUser(User user) throws SQLException {
+        String sql = String.format("DELETE FROM user WHERE id='%d'", user.getId());
+        Statement statement = connection.getConnection().createStatement();
+        statement.execute(sql);
     }
 }

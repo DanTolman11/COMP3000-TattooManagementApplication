@@ -17,4 +17,9 @@ public class Stock {
 
     public String getCategory() { return category;}
     public void setCategory(String category) { this.category = category;}
+
+    @Override
+    public String toString() {
+        return "Stock{set by the toString function}";
+    }
 }

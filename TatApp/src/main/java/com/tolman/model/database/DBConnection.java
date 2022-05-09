@@ -1,6 +1,6 @@
 package com.tolman.model.database;
 
-import com.tolman.utills.ConfigurationManager;
+import com.tolman.utils.ConfigurationManager;
 
 import java.io.File;
 import java.net.URISyntaxException;

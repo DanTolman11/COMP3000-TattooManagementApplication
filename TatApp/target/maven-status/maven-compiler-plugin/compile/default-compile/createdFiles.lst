@@ -1,0 +1,7 @@
+com\tolman\model\database\UserDAO.class
+com\tolman\utills\ConfigurationManager.class
+com\tolman\utills\Tests.class
+com\tolman\model\User.class
+com\tolman\Main.class
+com\tolman\model\database\DBConnection.class
+com\tolman\utills\Tests$statictest.class

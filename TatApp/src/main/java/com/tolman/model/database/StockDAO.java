@@ -22,7 +22,10 @@ public class StockDAO {
         ResultSet rs = statement.executeQuery(sql);
         while (rs.next()){
             Stock stock = new Stock();
+            stock.setId(rs.getInt("id"));
             stock.setName(rs.getString("name"));
+            stock.setCategory(rs.getString("category"));
+            stock.setAmount(rs.getInt("amount"));
             results.add(stock);
         }
         return results;
@@ -33,5 +36,29 @@ public class StockDAO {
         }
 
         return INSTANCE;
+    }
+
+    public boolean createStock(Stock stock) throws SQLException {
+        String sql = String.format("INSERT INTO stock(name, category, amount) values('%s', '%s', '%d')", stock.getName(), stock.getCategory(), stock.getAmount());
+        Statement statement = connection.getConnection().createStatement();
+        statement.execute(sql);
+        ResultSet rs =  statement.getGeneratedKeys();
+        if (rs.next()){
+            stock.setId(rs.getInt(1));
+        }
+        return true;
+    }
+
+    public boolean updateStock(Stock stock) throws SQLException {
+        String sql = String.format("UPDATE stock set name='%s', category='%s', amount='%s' WHERE id='%d'", stock.getName(), stock.getCategory(), stock.getAmount(), stock.getId());
+        Statement statement = connection.getConnection().createStatement();
+        statement.execute(sql);
+        return true;
+    }
+
+    public void deleteStock(Stock stock) throws SQLException {
+        String sql = String.format("DELETE FROM stock WHERE id='%d'", stock.getId());
+        Statement statement = connection.getConnection().createStatement();
+        statement.execute(sql);
     }
 }
